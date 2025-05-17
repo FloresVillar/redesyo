@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 public class Servidor {
     TCPServer tcpServer;
     Scanner sc= new Scanner(System.in);
@@ -55,18 +57,40 @@ public class Servidor {
     public void servidorEnvia(String mensaje){
         tcpServer.enviarMensaje(mensaje);
     }
+    //=============================
     class Pantalla extends JFrame{
         JTextArea mensajes;
+        JTextField entrada;
         Pantalla(){
             setTitle("SERVIDOR");
             setSize(300,300);
             setDefaultCloseOperation(EXIT_ON_CLOSE);
             mensajes = new JTextArea();
-            add(mensajes,BorderLayout.CENTER);
+            JScrollPane scroll = new JScrollPane(mensajes);
+            add(scroll,BorderLayout.CENTER);
+            JPanel botones = new JPanel(new BorderLayout());
+            entrada = new JTextField();
+            botones.add(entrada,BorderLayout.CENTER);
+            ponerBoton(botones,"enviar", new ActionListener() {
+                public void actionPerformed(ActionEvent evento){
+                    String mensj =  entrada.getText();
+                    if(!mensj.isEmpty()){
+                        servidorEnvia(mensj);
+                        entrada.setText("");
+                    }
+                }
+            });
+            add(botones,BorderLayout.SOUTH);
             setVisible(true);
         }
         public void agregarMensaje(String mensaje){
             mensajes.append(mensaje+"\n");
         }
+        public void ponerBoton(Container c,String nombre,ActionListener escuchador){
+            JButton boton = new JButton(nombre);
+            c.add(boton,BorderLayout.EAST);
+            boton.addActionListener(escuchador);
+        }
     }
+    //===============================
 }
