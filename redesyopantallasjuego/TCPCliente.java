@@ -1,4 +1,4 @@
-package redesyopantallas;
+package redesyopantallasjuego;
  
 import java.net.InetAddress;
 import java.net.Socket;

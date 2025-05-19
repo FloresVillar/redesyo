@@ -1,4 +1,4 @@
-package redesyopantallas;
+package parcial;
 
 import java.util.Scanner;
 

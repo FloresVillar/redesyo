@@ -1,9 +1,9 @@
-package redesyopantallas;
+package parcial;
  
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import redesyopantallas.TCPThread;
+import parcial.TCPThread;
 
 import java.io.IOException;
 import java.net.InetAddress;
