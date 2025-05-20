@@ -11,7 +11,6 @@ ID_CLIENTE | NOMBRE   | EMAIL  | TELÉFONO
 9  | Juan Pérez  | juan@email.com  | 987654321 
 10 | María López | maria@email.com  | 998877665 
 12  | Juan Pérez  | juan@email.com  | 987654321 
-12 | María López | maria@email.com  | 998877665
 13  | Juan Pérez  | juan@email.com  | 987654321 
 14 | María López | maria@email.com  | 998877665 
 15  | Juan Pérez  | juan@email.com  | 987654321 

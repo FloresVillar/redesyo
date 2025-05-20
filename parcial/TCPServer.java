@@ -26,8 +26,8 @@ public class TCPServer{
         this.escuchador = Listener;
         this.escuchadorNodo = ListenerNodo;
         clientes = new TCPThread[50];
-        nodos = new TCPThreadNodo[5];
-        primerosMensajes=new boolean[5];
+        nodos = new TCPThreadNodo[10];
+        primerosMensajes=new boolean[10];
     }
 
     public void run() {

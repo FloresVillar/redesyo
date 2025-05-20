@@ -41,7 +41,7 @@ public class Servidor {
         }).start();
 
         String entrada ="n";
-        System.out.println("Servidor: s para salir");
+        System.out.println("Servidor: s para salir, <enviar tablas a nodos> para enviar tablas");
         while(!entrada.equals("s")){
             entrada= sc.nextLine();
             servidorEnvia(entrada+": para cliente");//aqui puede distinguirse el tipo de mensaje para cliente y nodo
@@ -79,17 +79,7 @@ public class Servidor {
     public void servidorEnviaNodo(String mensaje){
         tcpServer.enviarMensajeNodo(mensaje);
     }
-    public String[] etiquetas(BufferedReader buf) throws IOException{
-        String [] etiquetas = null;
-        String l;
-        if((l=buf.readLine())!=null){
-            etiquetas = l.split("\\|");
-            for(int i=0;i<etiquetas.length;i++){
-                etiquetas[i]=etiquetas[i].trim();
-            }
-        }
-        return etiquetas;
-    }
+    
     public void leerTablasEnviar(){
         try{
             BufferedReader tclientes = new BufferedReader(new FileReader("C:\\Users\\FLORES VILLAR\\Desktop\\Concurrente\\redesyo\\parcial\\Tabla_Cliente.txt"));
@@ -98,18 +88,22 @@ public class Servidor {
             ArrayList<String> datosCuentas = new ArrayList<>();
             String linea;
             int cont = 0;
+            int t= 2;//cantidad de tablas;
+            String[] etiquetas = new String[t];
             while((linea=tclientes.readLine())!=null){
                 cont++;
-                if(cont<=2) continue;
-                datosClientes.add(linea);
+                if(cont==1) etiquetas[0]=linea;
+                if(cont==2) continue;
+                if(cont!=1&&cont!=2)datosClientes.add(linea);
             }
             tclientes.close();
             linea="";
             cont =0;
              while((linea=tcuentas.readLine())!=null){
                 cont++;
-                if(cont<=2) continue;
-                datosCuentas.add(linea);
+                if(cont==1) etiquetas[1]=linea;
+                if(cont==2) continue;
+                if(cont!=1&&cont!=2)datosCuentas.add(linea);
             }
             tcuentas.close();
             linea="";
@@ -124,14 +118,16 @@ public class Servidor {
              
             //ahora a separar entre los nodos
             int nNodos = tcpServer.obtenerNNodos();
-            ArrayList<String>[]data =new ArrayList[2];
+            @SuppressWarnings("unchecked")
+            ArrayList<String>[]data =new ArrayList[t];
             data[0]  = datosClientes;
             data[1]  =  datosCuentas;
             for(int i = 0;i<data.length;i++){
                 ArrayList<String>datai = data[i];
                 int bloque = (int)datai.size()/nNodos;
                 for(int j =0;j<nNodos;j++){
-                    ArrayList<String> ij = new ArrayList<>();  
+                    ArrayList<String> ij = new ArrayList<>();
+                    ij.add(etiquetas[i]);  
                     for(int k=j*bloque;k<(j+1)*bloque&&k<datai.size();k++){
                         ij.add(datai.get(k));
                     }
@@ -139,13 +135,19 @@ public class Servidor {
                     //j para calcular los rangos de la filas de data clientes/ cuentas
                     //enviar a tres nodos id:i,j ; rango:j*bloque,(j+1)*bloque ; info:cuerpode ij
                     String info ="";
-                    for(String t : ij){
-                        info=info+t+"\n"; 
+                    for(String tex : ij){
+                        info=info+tex+"\n"; 
                     }
                     //limites
-                    int inferior = j*bloque;
-                    int superior = Math.min((j+1)*bloque,datai.size());
-                    String info_enviar = "id:"+i+","+j+";"+"rango:"+inferior+","+superior+";info:"+info;
+                    int suma=0;
+                    if(i==1){
+                        suma = 100*i;
+                    }
+                    int fila =j+1;;
+                    int columna =i+1;
+                    int inferior = j*bloque+1+suma;
+                    int superior = Math.min((j+1)*bloque,datai.size())+1+suma;
+                    String info_enviar = "id:"+fila+","+columna+"|"+"rango:"+inferior+","+superior+"\n "+info;
                     //escoger a m nodos de entre nNodos
                     //m=3 nodos
                     for(int r =0;r<3;r++){
