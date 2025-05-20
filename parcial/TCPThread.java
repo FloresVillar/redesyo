@@ -43,7 +43,7 @@ public class TCPThread extends Thread{
         }
 
     }
-    public void enviarMensaje(String mensaje){
+    public void enviarMensajeACliente(String mensaje){ //escribir en cliente , para enviarle desde servidor
         if(out!=null && !out.checkError()){
             out.println(mensaje);
             out.flush();

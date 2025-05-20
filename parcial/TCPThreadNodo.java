@@ -30,7 +30,7 @@ public class TCPThreadNodo implements Runnable{
         try{
             out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(nodo.getOutputStream())));
             if(!primeros[ID]){
-                enviarMensaje("ID:"+ID);
+                enviarMensajeANodo("ID:"+ID);
             }
             in = new BufferedReader(new InputStreamReader(nodo.getInputStream()));
             escuchador = server.obtenerEscuchadorNodo();
@@ -44,7 +44,7 @@ public class TCPThreadNodo implements Runnable{
             e.printStackTrace();
         }
     }
-    public void enviarMensaje(String mensaje){
+    public void enviarMensajeANodo(String mensaje){
         if(out!=null&&!out.checkError()){
             out.println(mensaje);
             out.flush();

@@ -76,17 +76,17 @@ public class TCPServer{
 
     public void enviarMensaje(String mensaje){
         for(int i=0;i<nclientes;i++){
-            clientes[i].enviarMensaje(mensaje);
+            clientes[i].enviarMensajeACliente(mensaje);
         }
     }
     public void enviarMensajeNodo(String mensaje){
         for(int i=0;i<nNodos;i++){
-            nodos[i].enviarMensaje(mensaje);
+            nodos[i].enviarMensajeANodo(mensaje);
         }
     }
     public void enviarMensajes(String mensajes){
         for(int i=0;i<nclientes;i++){
-            clientes[i].enviarMensaje(mensajes);
+            clientes[i].enviarMensajeACliente(mensajes);
         }
     }
     public interface alRecibirMensaje   {

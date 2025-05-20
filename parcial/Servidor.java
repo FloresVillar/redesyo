@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
+
 public class Servidor {
     TCPServer tcpServer; 
     Scanner sc= new Scanner(System.in);
@@ -139,15 +140,18 @@ public class Servidor {
                     //enviar a tres nodos id:i,j ; rango:j*bloque,(j+1)*bloque ; info:cuerpode ij
                     String info ="";
                     for(String t : ij){
-                        info+=t; 
+                        info=info+t+"\n"; 
                     }
-                    String info_enviar = "id:"+i+","+j+";"+"rango:"+j*bloque+","+(j+1)*bloque+";info:"+info;
+                    //limites
+                    int inferior = j*bloque;
+                    int superior = Math.min((j+1)*bloque,datai.size());
+                    String info_enviar = "id:"+i+","+j+";"+"rango:"+inferior+","+superior+";info:"+info;
                     //escoger a m nodos de entre nNodos
                     //m=3 nodos
                     for(int r =0;r<3;r++){
                         int indx = (j +r)%nNodos;
                         TCPThreadNodo nodo = tcpServer.obtenerNodo(indx);
-                        nodo.enviarMensaje(info_enviar);
+                        nodo.enviarMensajeANodo(info_enviar);
                     }
                 }
             }

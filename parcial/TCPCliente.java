@@ -44,7 +44,7 @@ public class TCPCliente {
     public interface alRecibirMensaje {
         public void mensajeRecibido(String mensaje);
     }
-    public void enviarMensaje(String mensaje){
+    public void enviarMensaje(String mensaje){//out hace referencia al servidor , enviando desde cliente al servidor
         if(out!=null && !out.checkError()){
             out.println(mensaje);
             out.flush();
