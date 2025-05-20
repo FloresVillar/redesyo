@@ -14,7 +14,7 @@ public class TCPServer{
     TCPThread[] clientes;
     TCPThreadNodo[]nodos;
     final int SERVERPORT=5000;
-    final int NODOSPORT=50001;
+    final int NODOSPORT=5001;
     String mensaje;
     boolean corriendo = false;
     int nclientes = 0;
@@ -28,45 +28,62 @@ public class TCPServer{
         nodos = new TCPThreadNodo[5];
     }
 
-    public void run(){
-        corriendo = true;
-        try{
-            server = new ServerSocket(SERVERPORT);
-            serverNodos = new ServerSocket(NODOSPORT);
-            while(corriendo){
-                Socket cliente = server.accept();
-                System.out.println("cliente: "+nclientes+" creado");
-                clientes[nclientes] = new TCPThread(cliente,this,nclientes,clientes);
-                nclientes++;
-                Thread t = new Thread(clientes[nclientes]);
-                t.start();                
-            }
-            while(corriendo){
-                Socket nodo = serverNodos.accept();
-                System.out.println("nodo: "+nNodos+"creado");
-                nodos[nNodos] = new TCPThreadNodo(nodo,this,nNodos,nodos);
-                nNodos++;
-                Thread t= new Thread(nodos[nNodos]);
-                t.start();
-            }
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+    public void run() {
+    corriendo = true;
+    try {
+        server = new ServerSocket(SERVERPORT);
+        serverNodos = new ServerSocket(NODOSPORT);
 
+        // CLIENTES
+        new Thread(() -> {
+            while (corriendo) {
+                try {
+                    Socket cliente = server.accept();
+                    System.out.println("cliente: " + nclientes + " creado");
+                    clientes[nclientes] = new TCPThread(cliente, this, nclientes, clientes);
+                    Thread t = new Thread(clientes[nclientes]);
+                    t.start();
+                    nclientes++;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        // NODOS
+        new Thread(() -> {
+            while (corriendo) {
+                try {
+                    Socket nodo = serverNodos.accept();
+                    System.out.println("nodo: " + nNodos + " creado");
+                    nodos[nNodos] = new TCPThreadNodo(nodo, this, nNodos, nodos);
+                    Thread t = new Thread(nodos[nNodos]);
+                    t.start();
+                    nNodos++;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+    } catch (IOException e) {
+        e.printStackTrace();
     }
+}
+
 
     public void enviarMensaje(String mensaje){
-        for(int i=1;i<=nclientes;i++){
+        for(int i=0;i<nclientes;i++){
             clientes[i].enviarMensaje(mensaje);
         }
     }
     public void enviarMensajeNodo(String mensaje){
-        for(int i=1;i<=nclientes;i++){
+        for(int i=0;i<nNodos;i++){
             nodos[i].enviarMensaje(mensaje);
         }
     }
     public void enviarMensajes(String mensajes){
-        for(int i=1;i<=nclientes;i++){
+        for(int i=0;i<nclientes;i++){
             clientes[i].enviarMensaje(mensajes);
         }
     }

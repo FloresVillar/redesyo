@@ -25,7 +25,9 @@ public class TCPNodo {
     public void run(){
         try{
             InetAddress ipAddress =InetAddress.getByName(SERVERIP);
+            System.out.println("TCPNodo..");
             Socket server = new Socket(ipAddress,PORT);
+            System.out.println("TCPNodo server creado");
             out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(server.getOutputStream())));
             in = new BufferedReader(new InputStreamReader(server.getInputStream()));
             while(true){

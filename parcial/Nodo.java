@@ -31,14 +31,22 @@ public class Nodo {
                 tcpnodo = new TCPNodo("127.0.0.1",new TCPNodo.alRecibirMensaje(){
                     public void mensajeRecibido(String mensaje){
                         nodoEscuchador(mensaje);
+                        nodoEscuchadorPantalla(mensaje);
                     }
                 });
                 tcpnodo.run();
             }
-        });
+        }).start();
+         
     }
     public void nodoEscuchador(String mensaje){
         System.out.println("nodo recibe: "+mensaje);
+    }
+    public void nodoEscuchadorPantalla(String mensaje) {
+        String[] lineas = mensaje.split("\n");
+        for (String t : lineas) {
+            pantallaNodo.agregarMensaje(t + "\n");
+        }
     }
     public void nodoEnvia(String mensaje){
         tcpnodo.enviarMensaje(mensaje);

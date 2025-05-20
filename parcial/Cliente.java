@@ -36,7 +36,7 @@ public class Cliente {
                     @Override
                     public void mensajeRecibido(String mensaje) {
                         clienteEscuchador(mensaje);
-                        clienteEscuchadorHistorial(mensaje);
+                        clienteEscuchadorPantalla(mensaje);
                     }
                 });
                 tcpcliente.run();
@@ -54,7 +54,7 @@ public class Cliente {
         System.out.println("cliente recibe: " + mensaje);
     }
 
-    public void clienteEscuchadorHistorial(String mensaje) {
+    public void clienteEscuchadorPantalla(String mensaje) {
         String[] lineas = mensaje.split("\n");
         for (String t : lineas) {
             pantallaCliente.agregarMensaje(t + "\n");
