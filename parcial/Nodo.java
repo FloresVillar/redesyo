@@ -13,65 +13,43 @@ import javax.swing.JTextField;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-public class Cliente {
-    TCPCliente tcpcliente;
-    Scanner sc = new Scanner(System.in);
-    Pantalla pantallaCliente;
-
-    Cliente() {
-        pantallaCliente = new Pantalla();
+import parcial.TCPNodo.alRecibirMensaje;
+public class Nodo {
+    TCPNodo tcpnodo ;
+    Pantalla pantallaNodo;
+    Nodo(){
+        pantallaNodo = new Pantalla();
     }
-
-    public static void main(String[] args) {
-        Cliente obj = new Cliente();
+    public static void main(String[]args){
+        Nodo obj = new Nodo();
         obj.iniciar();
     }
-
-    public void iniciar() {
-        new Thread(new Runnable() {
+    public void iniciar(){
+        new Thread(new Runnable(){
             @Override
-            public void run() {
-                tcpcliente = new TCPCliente("127.0.0.1", new TCPCliente.alRecibirMensaje() {
-                    @Override
-                    public void mensajeRecibido(String mensaje) {
-                        clienteEscuchador(mensaje);
-                        clienteEscuchadorHistorial(mensaje);
+            public void run(){
+                tcpnodo = new TCPNodo("127.0.0.1",new TCPNodo.alRecibirMensaje(){
+                    public void mensajeRecibido(String mensaje){
+                        nodoEscuchador(mensaje);
                     }
                 });
-                tcpcliente.run();
+                tcpnodo.run();
             }
-        }).start();
-        String entrada = "n";
-        System.out.println("Cliente: s para salir");
-        while (!entrada.equals("s")) {
-            entrada = sc.nextLine();
-            clienteEnvia(entrada);
-        }
+        });
     }
-
-    public void clienteEscuchador(String mensaje) {
-        System.out.println("cliente recibe: " + mensaje);
+    public void nodoEscuchador(String mensaje){
+        System.out.println("nodo recibe: "+mensaje);
     }
-
-    public void clienteEscuchadorHistorial(String mensaje) {
-        String[] lineas = mensaje.split("\n");
-        for (String t : lineas) {
-            pantallaCliente.agregarMensaje(t + "\n");
-        }
+    public void nodoEnvia(String mensaje){
+        tcpnodo.enviarMensaje(mensaje);
     }
-
-    public void clienteEnvia(String mensaje) {
-        tcpcliente.enviarMensaje(mensaje);
-    }
-
-    // ==============================
+    //=========
     class Pantalla extends JFrame {
         JTextArea mensajes;
         JTextField entrada;
 
         Pantalla() {
-            setTitle("CLIENTE");
+            setTitle("NODO");
             setSize(300, 300);
             setDefaultCloseOperation(EXIT_ON_CLOSE);
             mensajes = new JTextArea();
@@ -84,7 +62,7 @@ public class Cliente {
                 public void actionPerformed(ActionEvent evento) {
                     String mensj = entrada.getText();
                     if (!mensj.isEmpty()) {
-                        clienteEnvia(mensj);
+                        nodoEnvia(mensj);
                         entrada.setText("");
                     }
                 }
@@ -103,5 +81,4 @@ public class Cliente {
             boton.addActionListener(escuchador);
         }
     }
-    // =========================
 }

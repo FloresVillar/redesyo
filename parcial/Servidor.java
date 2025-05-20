@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 public class Servidor {
-    TCPServer tcpServer;
+    TCPServer tcpServer; 
     Scanner sc= new Scanner(System.in);
     Pantalla pantallaServidor;
     ArrayList<String> historia;
@@ -25,9 +25,13 @@ public class Servidor {
             public void run(){
                 tcpServer = new TCPServer(new TCPServer.alRecibirMensaje(){
                     public void mensajeRecibido(String mensaje){
-                        servidorRecibe(mensaje);
+                        servidorEscuchador(mensaje);
                     }
-                });
+                },new TCPServer.alRecibirMensajeNodo() {
+                    public void mensajeRecibidoNodo(String mensaje){
+                        servidorEscuchadorNodo(mensaje);
+                    }
+                }); 
                 tcpServer.run();
             }
         }).start();
@@ -40,7 +44,7 @@ public class Servidor {
         }
     }
     int cont= 0;
-    public void servidorRecibe(String mensaje){
+    public void servidorEscuchador(String mensaje){
         System.out.println("servidor recibe: "+mensaje +" cont: "+cont);
         pantallaServidor.agregarMensaje(mensaje);
         System.out.println("Texto en pantallaServidor: " + pantallaServidor.mensajes.getText());
@@ -54,13 +58,24 @@ public class Servidor {
             cont=0;
         }
     }
+    public void servidorEscuchadorNodo(String mensaje){
+        System.out.println("servidor recibe: "+mensaje);
+        pantallaServidor.agregarMensaje(mensaje);
+        System.out.println("Texto en pantallaServidor: " + pantallaServidor.mensajes.getText());
+    
+    }
     public void servidorEnvia(String mensaje){
         tcpServer.enviarMensaje(mensaje);
+    }
+    public void servidorEnviaNodo(String mensaje){
+        tcpServer.enviarMensajeNodo(mensaje);
     }
     //=============================
     class Pantalla extends JFrame{
         JTextArea mensajes;
+        JTextArea mensajesNodo;
         JTextField entrada;
+        JTextField entradaNodo;
         Pantalla(){
             setTitle("SERVIDOR");
             setSize(300,300);
@@ -71,11 +86,25 @@ public class Servidor {
             JPanel botones = new JPanel(new BorderLayout());
             entrada = new JTextField();
             botones.add(entrada,BorderLayout.CENTER);
-            ponerBoton(botones,"enviar", new ActionListener() {
+            ponerBoton(botones,"enviar a cliente", new ActionListener() {
                 public void actionPerformed(ActionEvent evento){
                     String mensj =  entrada.getText();
                     if(!mensj.isEmpty()){
                         servidorEnvia(mensj);
+                        entrada.setText("");
+                    }
+                }
+            });
+            mensajesNodo = new JTextArea();
+            JScrollPane scrollNodo = new JScrollPane(mensajesNodo);
+            add(scrollNodo,BorderLayout.CENTER);
+            entradaNodo = new JTextField();
+            botones.add(entradaNodo,BorderLayout.CENTER);
+            ponerBoton(botones,"enviar a nodo", new ActionListener() {
+                public void actionPerformed(ActionEvent evento){
+                    String mensj =  entradaNodo.getText();
+                    if(!mensj.isEmpty()){
+                        servidorEnviaNodo(mensj);
                         entrada.setText("");
                     }
                 }
