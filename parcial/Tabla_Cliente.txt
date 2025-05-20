@@ -1,0 +1,26 @@
+ID_CLIENTE | NOMBRE   | EMAIL  | TELÉFONO 
+-------------------------------------------------------- 
+1  | Juan Pérez  | juan@email.com  | 987654321 
+2 | María López | maria@email.com  | 998877665 
+3  | Juan Pérez  | juan@email.com  | 987654321 
+4 | María López | maria@email.com  | 998877665
+5  | Juan Pérez  | juan@email.com  | 987654321 
+6 | María López | maria@email.com  | 998877665 
+7  | Juan Pérez  | juan@email.com  | 987654321 
+8 | María López | maria@email.com  | 998877665
+9  | Juan Pérez  | juan@email.com  | 987654321 
+10 | María López | maria@email.com  | 998877665 
+12  | Juan Pérez  | juan@email.com  | 987654321 
+12 | María López | maria@email.com  | 998877665
+13  | Juan Pérez  | juan@email.com  | 987654321 
+14 | María López | maria@email.com  | 998877665 
+15  | Juan Pérez  | juan@email.com  | 987654321 
+16 | María López | maria@email.com  | 998877665
+17  | Juan Pérez  | juan@email.com  | 987654321 
+18 | María López | maria@email.com  | 998877665 
+19  | Juan Pérez  | juan@email.com  | 987654321 
+20 | María López | maria@email.com  | 998877665
+21  | Juan Pérez  | juan@email.com  | 987654321 
+22 | María López | maria@email.com  | 998877665 
+23  | Juan Pérez  | juan@email.com  | 987654321 
+24 | María López | maria@email.com  | 998877665

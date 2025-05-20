@@ -4,6 +4,9 @@ import java.util.Scanner;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 public class Servidor {
     TCPServer tcpServer; 
@@ -40,17 +43,20 @@ public class Servidor {
         System.out.println("Servidor: s para salir");
         while(!entrada.equals("s")){
             entrada= sc.nextLine();
-            servidorEnvia(entrada+"para cliente");
-            servidorEnviaNodo(entrada+"para nodo");
+            servidorEnvia(entrada+": para cliente");
+            servidorEnviaNodo(entrada+": para nodo");
+            if(entrada.equals("enviar tablas a nodos")){
+                leerTablasEnviar();//leer Tabla_cliente y Tabla_Cuenta, separar en bloques y cada bloque i-esimo a 3 nodos diferentes
+            }
         }
     }
     int cont= 0;
     public void servidorEscuchador(String mensaje){
         System.out.println("servidor recibe de cliente: "+mensaje +" cont: "+cont);
         pantallaServidor.agregarMensaje(mensaje);
-        //System.out.println("Texto en pantallaServidor: " + pantallaServidor.mensajes.getText());
+        /*System.out.println("Texto en pantallaServidor: " + pantallaServidor.mensajes.getText());
         cont++;
-        /*if(cont==tcpServer.obtenerN()){
+        if(cont==tcpServer.obtenerN()){
             String historialMensajes = pantallaServidor.mensajes.getText();
             //System.out.println(historialMensajes);
             tcpServer.enviarMensajes(historialMensajes);
@@ -70,6 +76,34 @@ public class Servidor {
     }
     public void servidorEnviaNodo(String mensaje){
         tcpServer.enviarMensajeNodo(mensaje);
+    }
+    public void leerTablasEnviar(){
+        try{
+            BufferedReader tclientes = new BufferedReader(new FileReader("Tabla_Cliente.txt"));
+            ArrayList <String> datosClientes = new ArrayList<>();
+            BufferedReader tcuentas = new BufferedReader(new FileReader("Tabla_Cuenta.txt"));
+            ArrayList<String> datosCuentas = new ArrayList<>();
+            String linea;
+            int cont = 0;
+            while((linea=tclientes.readLine())!=null){
+                cont++;
+                if(cont<=2) continue;
+                datosClientes.add(linea);
+            }
+            tclientes.close();
+            linea="";
+            cont =0;
+             while((linea=tcuentas.readLine())!=null){
+                cont++;
+                if(cont<=2) continue;
+                datosCuentas.add(linea);
+            }
+            tcuentas.close();
+            linea="";
+
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
     //=============================
     class Pantalla extends JFrame {

@@ -18,7 +18,7 @@ public class Cliente {
     TCPCliente tcpcliente;
     Scanner sc = new Scanner(System.in);
     Pantalla pantallaCliente;
-
+    boolean primerMensaje =false;
     Cliente() {
         pantallaCliente = new Pantalla();
     }
@@ -35,8 +35,15 @@ public class Cliente {
                 tcpcliente = new TCPCliente("127.0.0.1", new TCPCliente.alRecibirMensaje() {
                     @Override
                     public void mensajeRecibido(String mensaje) {
-                        clienteEscuchador(mensaje);
-                        clienteEscuchadorPantalla(mensaje);
+                        //si al inicio el cliente no recibe nada especial desde el servidor
+                        primerMensaje = true;
+                        if(!primerMensaje){
+                            clienteEscuchadorInicio(mensaje);
+                        }
+                        else{
+                            clienteEscuchador(mensaje);
+                            clienteEscuchadorPantalla(mensaje);
+                        }
                     }
                 });
                 tcpcliente.run();
@@ -49,7 +56,10 @@ public class Cliente {
             clienteEnvia(entrada);
         }
     }
-
+    public void clienteEscuchadorInicio(String mensaje){
+        //lo que hara con el mensaje al inicio
+        primerMensaje = true;
+    }
     public void clienteEscuchador(String mensaje) {
         System.out.println("cliente recibe: " + mensaje);
     }

@@ -18,15 +18,20 @@ public class TCPThreadNodo implements Runnable{
     PrintWriter out;
     BufferedReader in;
     String mensaje;
-    TCPThreadNodo(Socket nod,TCPServer serv,int id,TCPThreadNodo[]amg){
+    boolean []primeros;
+    TCPThreadNodo(Socket nod,TCPServer serv,int id,TCPThreadNodo[]amg,boolean[]primerosMensajes){
         server  = serv;
         ID = id;
         nodo = nod;
         amigos = amg;
+        primeros = primerosMensajes;
     }
     public void run(){
         try{
             out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(nodo.getOutputStream())));
+            if(!primeros[ID]){
+                enviarMensaje("ID:"+ID);
+            }
             in = new BufferedReader(new InputStreamReader(nodo.getInputStream()));
             escuchador = server.obtenerEscuchadorNodo();
             while(true){
