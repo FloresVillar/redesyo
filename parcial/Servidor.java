@@ -43,7 +43,7 @@ public class Servidor {
         System.out.println("Servidor: s para salir");
         while(!entrada.equals("s")){
             entrada= sc.nextLine();
-            servidorEnvia(entrada+": para cliente");
+            servidorEnvia(entrada+": para cliente");//aqui puede distinguirse el tipo de mensaje para cliente y nodo
             servidorEnviaNodo(entrada+": para nodo");
             if(entrada.equals("enviar tablas a nodos")){
                 leerTablasEnviar();//leer Tabla_cliente y Tabla_Cuenta, separar en bloques y cada bloque i-esimo a 3 nodos diferentes
@@ -52,6 +52,7 @@ public class Servidor {
     }
     int cont= 0;
     public void servidorEscuchador(String mensaje){
+        cont++;
         System.out.println("servidor recibe de cliente: "+mensaje +" cont: "+cont);
         pantallaServidor.agregarMensaje(mensaje);
         /*System.out.println("Texto en pantallaServidor: " + pantallaServidor.mensajes.getText());
