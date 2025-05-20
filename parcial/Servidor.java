@@ -78,11 +78,22 @@ public class Servidor {
     public void servidorEnviaNodo(String mensaje){
         tcpServer.enviarMensajeNodo(mensaje);
     }
+    public String[] etiquetas(BufferedReader buf) throws IOException{
+        String [] etiquetas = null;
+        String l;
+        if((l=buf.readLine())!=null){
+            etiquetas = l.split("\\|");
+            for(int i=0;i<etiquetas.length;i++){
+                etiquetas[i]=etiquetas[i].trim();
+            }
+        }
+        return etiquetas;
+    }
     public void leerTablasEnviar(){
         try{
-            BufferedReader tclientes = new BufferedReader(new FileReader("Tabla_Cliente.txt"));
+            BufferedReader tclientes = new BufferedReader(new FileReader("C:\\Users\\FLORES VILLAR\\Desktop\\Concurrente\\redesyo\\parcial\\Tabla_Cliente.txt"));
             ArrayList <String> datosClientes = new ArrayList<>();
-            BufferedReader tcuentas = new BufferedReader(new FileReader("Tabla_Cuenta.txt"));
+            BufferedReader tcuentas = new BufferedReader(new FileReader("C:\\Users\\FLORES VILLAR\\Desktop\\Concurrente\\redesyo\\parcial\\Tabla_Cuenta.txt"));
             ArrayList<String> datosCuentas = new ArrayList<>();
             String linea;
             int cont = 0;
@@ -101,6 +112,45 @@ public class Servidor {
             }
             tcuentas.close();
             linea="";
+            //mostrar datas leidas
+            
+            for(String e:datosClientes){
+                System.out.print(e+"\n");
+            }
+            for(String e:datosCuentas){
+                System.out.print(e+"\n");
+            }
+             
+            //ahora a separar entre los nodos
+            int nNodos = tcpServer.obtenerNNodos();
+            ArrayList<String>[]data =new ArrayList[2];
+            data[0]  = datosClientes;
+            data[1]  =  datosCuentas;
+            for(int i = 0;i<data.length;i++){
+                ArrayList<String>datai = data[i];
+                int bloque = (int)datai.size()/nNodos;
+                for(int j =0;j<nNodos;j++){
+                    ArrayList<String> ij = new ArrayList<>();  
+                    for(int k=j*bloque;k<(j+1)*bloque&&k<datai.size();k++){
+                        ij.add(datai.get(k));
+                    }
+                    //id ij  i=0 para clientes  i=1 para cuentas
+                    //j para calcular los rangos de la filas de data clientes/ cuentas
+                    //enviar a tres nodos id:i,j ; rango:j*bloque,(j+1)*bloque ; info:cuerpode ij
+                    String info ="";
+                    for(String t : ij){
+                        info+=t; 
+                    }
+                    String info_enviar = "id:"+i+","+j+";"+"rango:"+j*bloque+","+(j+1)*bloque+";info:"+info;
+                    //escoger a m nodos de entre nNodos
+                    //m=3 nodos
+                    for(int r =0;r<3;r++){
+                        int indx = (j +r)%nNodos;
+                        TCPThreadNodo nodo = tcpServer.obtenerNodo(indx);
+                        nodo.enviarMensaje(info_enviar);
+                    }
+                }
+            }
 
         }catch(IOException e){
             e.printStackTrace();

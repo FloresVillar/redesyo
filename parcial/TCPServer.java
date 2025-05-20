@@ -108,4 +108,8 @@ public class TCPServer{
     int obtenerNNodos(){
         return nNodos;
     }
+    TCPThreadNodo obtenerNodo(int indx){
+        if(indx<0 || indx>=nNodos) return null;
+        return nodos[indx];
+    }
 }
