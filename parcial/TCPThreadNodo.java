@@ -17,30 +17,36 @@ public class TCPThreadNodo implements Runnable{
     TCPThreadNodo[]amigos;
     PrintWriter out;
     BufferedReader in;
-    String mensaje;
-    boolean []primeros;
-    TCPThreadNodo(Socket nod,TCPServer serv,int id,TCPThreadNodo[]amg,boolean[]primerosMensajes){
+    String mensaje; 
+    boolean corriendo;
+    TCPThreadNodo(Socket nod,TCPServer serv,int id,TCPThreadNodo[]amg ){
         server  = serv;
         ID = id;
         nodo = nod;
-        amigos = amg;
-        primeros = primerosMensajes;
+        amigos = amg; 
     }
     public void run(){
+        corriendo = true;
         try{
-            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(nodo.getOutputStream())));
-            if(!primeros[ID]){
-                enviarMensajeANodo("ID:"+ID);
-            }
+            
+           
+            out= new PrintWriter(new BufferedWriter(new OutputStreamWriter(nodo.getOutputStream())));
             in = new BufferedReader(new InputStreamReader(nodo.getInputStream()));
-            escuchador = server.obtenerEscuchadorNodo();
-            while(true){
+            escuchador =  server.obtenerEscuchadorNodo();
+            while(corriendo){
                 mensaje = in.readLine();
-                if(mensaje!=null&&escuchador!=null){
+                if(mensaje!=null && escuchador!=null){
+                    System.out.println("dentro de while TCPThreadNodo IN");
+                    System.out.println("escuchador"+escuchador);
                     escuchador.mensajeRecibidoNodo(mensaje);
+                }else{
+                    System.out.println("saliendo ");
+                    break;
                 }
+                mensaje =null;
             }
-        }catch(IOException e){
+                
+        }catch(Exception e){
             e.printStackTrace();
         }
     }

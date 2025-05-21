@@ -27,12 +27,15 @@ public class Servidor {
         new Thread(new Runnable() {
             @Override
             public void run(){
-                tcpServer = new TCPServer(new TCPServer.alRecibirMensaje(){
+                tcpServer = new TCPServer(
+                new TCPServer.alRecibirMensaje(){
                     public void mensajeRecibido(String mensaje){
+                        System.out.println("mensajeRecibido servidor desde cliente");
                         servidorEscuchador(mensaje);
                     }
                 },new TCPServer.alRecibirMensajeNodo() {
                     public void mensajeRecibidoNodo(String mensaje){
+                        System.out.println("mensajeRecibido servidor desde nodo");
                         servidorEscuchadorNodo(mensaje);
                     }
                 }); 
@@ -50,11 +53,9 @@ public class Servidor {
                 leerTablasEnviar();//leer Tabla_cliente y Tabla_Cuenta, separar en bloques y cada bloque i-esimo a 3 nodos diferentes
             }
         }
-    }
-    int cont= 0;
-    public void servidorEscuchador(String mensaje){
-        cont++;
-        System.out.println("servidor recibe de cliente: "+mensaje +" cont: "+cont);
+    } 
+    public void servidorEscuchador(String mensaje){ 
+        System.out.println("servidor recibe de cliente: "+mensaje);
         pantallaServidor.agregarMensaje(mensaje);
         /*System.out.println("Texto en pantallaServidor: " + pantallaServidor.mensajes.getText());
         cont++;
@@ -86,6 +87,7 @@ public class Servidor {
             ArrayList <String> datosClientes = new ArrayList<>();
             BufferedReader tcuentas = new BufferedReader(new FileReader("C:\\Users\\FLORES VILLAR\\Desktop\\Concurrente\\redesyo\\parcial\\Tabla_Cuenta.txt"));
             ArrayList<String> datosCuentas = new ArrayList<>();
+
             String linea;
             int cont = 0;
             int t= 2;//cantidad de tablas;
@@ -106,6 +108,7 @@ public class Servidor {
                 if(cont!=1&&cont!=2)datosCuentas.add(linea);
             }
             tcuentas.close();
+            arqueroCuenta(datosCuentas);
             linea="";
             //mostrar datas leidas
             
@@ -143,11 +146,11 @@ public class Servidor {
                     if(i==1){
                         suma = 100*i;
                     }
-                    int fila =j+1;;
+                    int fila =j+1;; //para que concuerde con la imagen del parcial
                     int columna =i+1;
                     int inferior = j*bloque+1+suma;
                     int superior = Math.min((j+1)*bloque,datai.size())+1+suma;
-                    String info_enviar = "id:"+fila+","+columna+"|"+"rango:"+inferior+","+superior+"\n "+info;
+                    String info_enviar = "id:"+fila+"."+columna+"|"+"rango:"+inferior+","+superior+"\n "+info;
                     //escoger a m nodos de entre nNodos
                     //m=3 nodos
                     for(int r =0;r<3;r++){
@@ -161,6 +164,15 @@ public class Servidor {
         }catch(IOException e){
             e.printStackTrace();
         }
+    }
+    double dineroTotal ;
+    public void arqueroCuenta(ArrayList<String> dataCuenta){
+        double suma=0;
+        for(String linea:dataCuenta){
+            String []partes = linea.split("|");
+            suma+=Double.parseDouble(partes[2].trim());
+        }
+        dineroTotal = suma;
     }
     //=============================
     class Pantalla extends JFrame {
@@ -192,11 +204,15 @@ public class Servidor {
     }
 
     public void agregarMensaje(String mensaje) {
+        SwingUtilities.invokeLater(() -> {
         mensajes.append(mensaje + "\n");
+    });
     }
 
     public void agregarMensajeNodo(String mensaje) {
+        SwingUtilities.invokeLater(() -> {
         mensajesNodo.append(mensaje + "\n");
+    });
     }
 }
 

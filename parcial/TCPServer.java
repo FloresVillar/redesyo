@@ -12,8 +12,7 @@ public class TCPServer{
     ServerSocket server;
     ServerSocket serverNodos;
     TCPThread[] clientes;
-    TCPThreadNodo[]nodos;
-    boolean[]primerosMensajes;
+    TCPThreadNodo[]nodos; 
     final int SERVERPORT=5000;
     final int NODOSPORT=5001;
     String mensaje;
@@ -26,8 +25,7 @@ public class TCPServer{
         this.escuchador = Listener;
         this.escuchadorNodo = ListenerNodo;
         clientes = new TCPThread[50];
-        nodos = new TCPThreadNodo[10];
-        primerosMensajes=new boolean[10];
+        nodos = new TCPThreadNodo[10]; 
     }
 
     public void run() {
@@ -58,7 +56,7 @@ public class TCPServer{
                 try {
                     Socket nodo = serverNodos.accept();
                     System.out.println("nodo: " + nNodos + " creado");
-                    nodos[nNodos] = new TCPThreadNodo(nodo, this, nNodos, nodos,primerosMensajes);
+                    nodos[nNodos] = new TCPThreadNodo(nodo, this, nNodos, nodos);
                     Thread t = new Thread(nodos[nNodos]);
                     t.start();
                     nNodos++;

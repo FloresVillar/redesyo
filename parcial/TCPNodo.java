@@ -28,24 +28,30 @@ public class TCPNodo {
             System.out.println("TCPNodo..");
             Socket server = new Socket(ipAddress,PORT);
             System.out.println("TCPNodo server creado");
-            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(server.getOutputStream())));
-            in = new BufferedReader(new InputStreamReader(server.getInputStream()));
-            while(true){
-                mensaje  =in.readLine();
-                if(mensaje!=null&&escuchador!=null){
-                    escuchador.mensajeRecibido(mensaje);
+            try{
+                out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(server.getOutputStream())));
+                in = new BufferedReader(new InputStreamReader(server.getInputStream()));
+                while(true){
+                    mensaje  =in.readLine();
+                    if(mensaje!=null&&escuchador!=null){
+                        escuchador.mensajeRecibido(mensaje);
+                    }
                 }
+            }catch(IOException e){
+                e.printStackTrace();
+            }finally{server.close();}
+            }catch(Exception e){
+                e.printStackTrace();
             }
-        }catch(IOException e){
-            e.printStackTrace();
         }
-    }
     public interface  alRecibirMensaje {
         public void mensajeRecibido(String mensaje);
         
     }
     public void enviarMensaje(String mensaje){
-        if(out!=null&&!out.checkError()){
+        System.out.println("nodoEnvia-enviarMensaje");
+        if(out!=null && !out.checkError()){
+            System.out.println("nodoEnvia-enviarMensaje.if"+mensaje);
             out.println(mensaje);
             out.flush();
         }

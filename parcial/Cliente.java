@@ -50,7 +50,7 @@ public class Cliente {
             }
         }).start();
         String entrada = "n";
-        System.out.println("Cliente: s para salir");
+        System.out.println("Cliente: s para salir, separar etiquetas con | ");
         while (!entrada.equals("s")) {
             entrada = sc.nextLine();
             clienteEnvia(entrada);
@@ -72,6 +72,7 @@ public class Cliente {
     }
 
     public void clienteEnvia(String mensaje) {
+        System.out.println("clienteEnvia");
         tcpcliente.enviarMensaje(mensaje);
     }
 
@@ -82,24 +83,38 @@ public class Cliente {
 
         Pantalla() {
             setTitle("CLIENTE");
-            setSize(300, 300);
+            setSize(400, 300);
             setDefaultCloseOperation(EXIT_ON_CLOSE);
-            mensajes = new JTextArea();
+            mensajes = new JTextArea();//cuando recibe desde servidor
             JScrollPane scroll = new JScrollPane(mensajes);
             add(scroll, BorderLayout.CENTER);
-            JPanel botones = new JPanel(new BorderLayout());
+            JPanel panelentrada =new JPanel(new BorderLayout());
+            JPanel panelbotones = new JPanel(new GridLayout(2,1,5,5));
             entrada = new JTextField();
-            botones.add(entrada, BorderLayout.CENTER);
-            ponerBoton(botones, "enviar", new ActionListener() {
+            panelentrada.add(entrada,BorderLayout.CENTER);
+            
+            ponerBoton(panelbotones, "consultar saldo", new ActionListener() {
                 public void actionPerformed(ActionEvent evento) {
-                    String mensj = entrada.getText();
+                    String mensj = entrada.getText();//siguiendo la logica de los mensjaes "CONSULTAR_SALDO | ID_CUENTA | SALDO"
                     if (!mensj.isEmpty()) {
+                        mensj="ID_CUENTA \n" +mensj;
                         clienteEnvia(mensj);
                         entrada.setText("");
                     }
                 }
             });
-            add(botones, BorderLayout.SOUTH);
+             ponerBoton(panelbotones, "transferir fondos", new ActionListener() {
+                public void actionPerformed(ActionEvent evento) {
+                    String mensj = entrada.getText();
+                    if (!mensj.isEmpty()){
+                        mensj="ID_CUENTA_ORIGEN | ID_CUENTA_DESTINO \n"+ mensj;
+                        clienteEnvia(mensj);
+                        entrada.setText("");
+                    }
+                }
+            });
+            panelentrada.add(panelbotones,BorderLayout.EAST);
+            add(panelentrada, BorderLayout.SOUTH);
             setVisible(true);
         }
 

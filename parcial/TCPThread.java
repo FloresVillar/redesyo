@@ -28,20 +28,26 @@ public class TCPThread extends Thread{
     public void run(){
         corriendo = true;
         try{
+            
+           
             out= new PrintWriter(new BufferedWriter(new OutputStreamWriter(cliente.getOutputStream())));
             in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
             escuchador =  server.obtenerEscuchador();
             while(corriendo){
                 mensaje = in.readLine();
                 if(mensaje!=null && escuchador!=null){
+                    System.out.println("dentro de while TCPThread IN");
+                    System.out.println("escuchador"+escuchador);
                     escuchador.mensajeRecibido(mensaje);
+                }else{
+                    System.out.println("saliendo ");
+                    break;
                 }
                 mensaje =null;
-            }    
-        }catch(IOException e){
+            }   
+        }catch(Exception e){
             e.printStackTrace();
         }
-
     }
     public void enviarMensajeACliente(String mensaje){ //escribir en cliente , para enviarle desde servidor
         if(out!=null && !out.checkError()){

@@ -16,8 +16,7 @@ import java.awt.event.ActionListener;
 import parcial.TCPNodo.alRecibirMensaje;
 public class Nodo {
     TCPNodo tcpnodo ;
-    Pantalla pantallaNodo;
-    boolean primerMensaje=false;
+    Pantalla pantallaNodo; 
     int ID;
     Nodo(){
         pantallaNodo = new Pantalla();
@@ -32,25 +31,16 @@ public class Nodo {
             public void run(){
                 tcpnodo = new TCPNodo("127.0.0.1",new TCPNodo.alRecibirMensaje(){
                     public void mensajeRecibido(String mensaje){
-                        if(!primerMensaje){
-                            nodoEscuchadorInicio(mensaje);
-                        }else{
-                            nodoEscuchador(mensaje);
-                            nodoEscuchadorPantalla(mensaje);
-                        }
+                        nodoEscuchador(mensaje);
+                        nodoEscuchadorPantalla(mensaje);
+                        
                     }
                 });
                 tcpnodo.run();
             }
         }).start();
          
-    }
-    public void nodoEscuchadorInicio(String mensaje){
-        //que recibira(procesará) el nodo al inicio? //"ID:ID"
-        System.out.println("nodo recibe: "+mensaje);
-        ID = Integer.parseInt(mensaje.split(":")[1].trim());
-        primerMensaje = true;
-    }
+    } 
     public void nodoEscuchador(String mensaje){
         System.out.println("nodo recibe: "+mensaje);
     }
@@ -78,6 +68,7 @@ public class Nodo {
             JPanel botones = new JPanel(new BorderLayout());
             entrada = new JTextField();
             botones.add(entrada, BorderLayout.CENTER);
+            //boton para eviar mensaje generico
             ponerBoton(botones, "enviar", new ActionListener() {
                 public void actionPerformed(ActionEvent evento) {
                     String mensj = entrada.getText();
@@ -86,7 +77,7 @@ public class Nodo {
                         entrada.setText("");
                     }
                 }
-            });
+            }); 
             add(botones, BorderLayout.SOUTH);
             setVisible(true);
         }

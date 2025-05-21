@@ -28,16 +28,19 @@ public class TCPCliente {
         try{
             InetAddress ipAddress = InetAddress.getByName(SERVERIP);
             Socket server = new Socket(ipAddress,SERVERPORT);
-            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(server.getOutputStream())));
-            in = new BufferedReader(new InputStreamReader(server.getInputStream()));
-            
-            while(corriendo){
-                mensaje = in.readLine();
-                if(mensaje!=null && escuchador!=null){
-                    escuchador.mensajeRecibido(mensaje);
+            try{
+                out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(server.getOutputStream())));
+                in = new BufferedReader(new InputStreamReader(server.getInputStream()));
+                while(corriendo){
+                    mensaje = in.readLine();
+                    if(mensaje!=null && escuchador!=null){
+                        escuchador.mensajeRecibido(mensaje);
+                    }
                 }
-            }
-        }catch(IOException e){
+            }catch(IOException e){
+                e.printStackTrace();
+            }finally{server.close();}
+        }catch(Exception e){
             e.printStackTrace();
         }
     }
@@ -45,7 +48,9 @@ public class TCPCliente {
         public void mensajeRecibido(String mensaje);
     }
     public void enviarMensaje(String mensaje){//out hace referencia al servidor , enviando desde cliente al servidor
+        System.out.println("clienteEnvia-enviarMensaje");
         if(out!=null && !out.checkError()){
+            System.out.println("clienteEnvia-enviarMensaje.if"+mensaje);
             out.println(mensaje);
             out.flush();
         }
