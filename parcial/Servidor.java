@@ -54,11 +54,32 @@ public class Servidor {
             }
         }
     } 
-    public void servidorEscuchador(String mensaje){ 
+    public void servidorEscuchador(String mensaje){ //FALTA IMPLEMENTAR
         System.out.println("servidor recibe de cliente: "+mensaje);
         pantallaServidor.agregarMensaje(mensaje);
         //deteminar si el mensaje es una solicitud desde el cliente
-        
+        if(mensaje.split(";")[0].trim().equals("ID_CUENTA")){
+            System.out.println("consultar_saldo");
+            //se trata de una peticion CONSULTAR_SALDO
+            //consultar a los nodos 
+            //el nodo que tenga a ij i=tabla j=parte j-esima eniviado a ese nodo devolveria 
+            //su saldo si tiene esa cuenta, cabe señalar que el ragno de cada ij tambien indica el minimo y maximo de la cuenta a consultar
+            //una vez obtenido el saldo de la cuenta devolver meiante enviarMensaje al cliente indicado, 
+            //validar que es un int ,,,,confiar en usuario
+            int ID_CUENTA = Integer.parseInt(mensaje.split(";")[1].trim());
+            //recibe respuetas de los nodos, ignora los vacios
+            //saldo =consultar_cuenta_a_nodos("etiqueta:CONSULTAR_SALDO" ID_CUENTA)
+            //informar_consulta_cuenta(ID_CUENTA,saldo) a cliente, ademas agregar info a Tabla_Transferencias
+        }
+        if(mensaje.split(";")[0].trim().split("|")[0].trim().equals("ID_CUENTA_ORIGEN")){
+            if(mensaje.split(";")[0].trim().split("|")[1].trim().equals("ID_CUENTA_ORIGEN")){
+                if(mensaje.split(";")[0].trim().split("|")[2].trim().equals("MONTO")){
+                    //es una transferencia
+                    //mandar una consulta a los nodos ccon la etiqueta TRANSFERIR_FONDOS como primera linea de mensaje hacia nodo
+                    //se recibe resultado de operacion e info para la Tabla_Transferencias
+                }
+            }
+        }
     }
     public void servidorEscuchadorNodo(String mensaje){
         System.out.println("servidor recibe de nodo: "+mensaje);

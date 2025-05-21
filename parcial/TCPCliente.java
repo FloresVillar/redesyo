@@ -50,7 +50,7 @@ public class TCPCliente {
     public void enviarMensaje(String mensaje){//out hace referencia al servidor , enviando desde cliente al servidor
         System.out.println("clienteEnvia-enviarMensaje");
         if(out!=null && !out.checkError()){
-            System.out.println("clienteEnvia-enviarMensaje.if"+mensaje);
+            System.out.println("clienteEnvia-enviarMensaje.if "+mensaje);
             out.println(mensaje);
             out.flush();
         }

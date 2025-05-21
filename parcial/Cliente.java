@@ -97,7 +97,7 @@ public class Cliente {
                 public void actionPerformed(ActionEvent evento) {
                     String mensj = entrada.getText();//siguiendo la logica de los mensjaes "CONSULTAR_SALDO | ID_CUENTA | SALDO"
                     if (!mensj.isEmpty()) {
-                        mensj="ID_CUENTA \n" +mensj;
+                        mensj="ID_CUENTA ;" +mensj;
                         clienteEnvia(mensj);
                         entrada.setText("");
                     }
@@ -107,7 +107,7 @@ public class Cliente {
                 public void actionPerformed(ActionEvent evento) {
                     String mensj = entrada.getText();
                     if (!mensj.isEmpty()){
-                        mensj="ID_CUENTA_ORIGEN | ID_CUENTA_DESTINO \n"+ mensj;
+                        mensj="ID_CUENTA_ORIGEN | ID_CUENTA_DESTINO | MONTO ;"+ mensj;
                         clienteEnvia(mensj);
                         entrada.setText("");
                     }
