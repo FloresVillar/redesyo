@@ -43,6 +43,14 @@ public class Nodo {
     } 
     public void nodoEscuchador(String mensaje){
         System.out.println("nodo recibe: "+mensaje);
+        //determina si el mensaje recibido son las tablas particionadas enviadas a este nodo
+        String[]partes =mensaje.split("\n");
+        String[]primeralinea =partes[0].split("|");
+        boolean c1 = primeralinea[0].split(":")[0].trim().equals("PARTE");
+        boolean c2 = primeralinea[1].split(":")[0].trim().equals("PRANGO_IDS");
+        if(c1&&c2){
+            //agregar info a la data local de cada nodo
+        }
     }
     public void nodoEscuchadorPantalla(String mensaje) {
         String[] lineas = mensaje.split("\n");

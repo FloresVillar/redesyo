@@ -57,22 +57,14 @@ public class Servidor {
     public void servidorEscuchador(String mensaje){ 
         System.out.println("servidor recibe de cliente: "+mensaje);
         pantallaServidor.agregarMensaje(mensaje);
-        /*System.out.println("Texto en pantallaServidor: " + pantallaServidor.mensajes.getText());
-        cont++;
-        if(cont==tcpServer.obtenerN()){
-            String historialMensajes = pantallaServidor.mensajes.getText();
-            //System.out.println(historialMensajes);
-            tcpServer.enviarMensajes(historialMensajes);
-            historia.add(historialMensajes);
-            pantallaServidor.mensajes.setText("");
-            cont=0;
-        }*/
+        //deteminar si el mensaje es una solicitud desde el cliente
+        
     }
     public void servidorEscuchadorNodo(String mensaje){
         System.out.println("servidor recibe de nodo: "+mensaje);
         pantallaServidor.agregarMensajeNodo(mensaje);
         //System.out.println("Texto en pantallaServidor: " + pantallaServidor.mensajesNodo.getText());
-    
+        //determinar si el mensaje desde el nodo es informacion solicitada acerca de cosulta o transaccion
     }
     public void servidorEnvia(String mensaje){
         tcpServer.enviarMensaje(mensaje);
@@ -146,17 +138,17 @@ public class Servidor {
                     if(i==1){
                         suma = 100*i;
                     }
-                    int fila =j+1;; //para que concuerde con la imagen del parcial
-                    int columna =i+1;
+                    int columna=j+1;;  
+                    int fila =i+1;
                     int inferior = j*bloque+1+suma;
                     int superior = Math.min((j+1)*bloque,datai.size())+1+suma;
-                    String info_enviar = "id:"+fila+"."+columna+"|"+"rango:"+inferior+","+superior+"\n "+info;
+                    String info_enviar = "PARTE:"+fila+"."+columna+"|"+"RANGO_IDS:"+inferior+","+superior+"\n "+info;
                     //escoger a m nodos de entre nNodos
                     //m=3 nodos
                     for(int r =0;r<3;r++){
                         int indx = (j +r)%nNodos;
-                        TCPThreadNodo nodo = tcpServer.obtenerNodo(indx);
-                        nodo.enviarMensajeANodo(info_enviar);
+                        TCPThreadNodo tcpthreadnodo = tcpServer.obtenerNodo(indx);
+                        tcpthreadnodo.enviarMensajeANodo(info_enviar);
                     }
                 }
             }
