@@ -65,7 +65,7 @@ public class Cliente {
     }
 
     public void clienteEscuchadorPantalla(String mensaje) {
-        String[] lineas = mensaje.split("\n");
+        String[] lineas = mensaje.split("[\\n;]");
         for (String t : lineas) {
             pantallaCliente.agregarMensaje(t + "\n");
         }

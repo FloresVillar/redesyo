@@ -58,22 +58,33 @@ public class Servidor {
         System.out.println("servidor recibe de cliente: "+mensaje);
         pantallaServidor.agregarMensaje(mensaje);
         //deteminar si el mensaje es una solicitud desde el cliente
-        if(mensaje.split(";")[0].trim().equals("ID_CUENTA")){
-            System.out.println("consultar_saldo");
+        if(mensaje.contains(";")){
+            if(mensaje.split(";")[0].trim().equals("ID_CUENTA")){
+                System.out.println("CONSULTAR_SALDO");
             //se trata de una peticion CONSULTAR_SALDO
-            //consultar a los nodos 
-            //el nodo que tenga a ij i=tabla j=parte j-esima eniviado a ese nodo devolveria 
+            //consultar a los nodos   
             //su saldo si tiene esa cuenta, cabe señalar que el ragno de cada ij tambien indica el minimo y maximo de la cuenta a consultar
             //una vez obtenido el saldo de la cuenta devolver meiante enviarMensaje al cliente indicado, 
-            //validar que es un int ,,,,confiar en usuario
-            int ID_CUENTA = Integer.parseInt(mensaje.split(";")[1].trim());
+            //validar que es un int o confiar en usuario
+            int ID_CUENTA=0;
+            try{
+                ID_CUENTA = Integer.parseInt(mensaje.split(";")[1].trim());
+                
+                String msj = "CONSULTAR_SALDO;"+ID_CUENTA;
+                servidorEnviaNodo(msj);
+            }catch(NumberFormatException e){
+                System.out.print("id no valido");
+            }
+            
             //recibe respuetas de los nodos, ignora los vacios
             //saldo =consultar_cuenta_a_nodos("etiqueta:CONSULTAR_SALDO" ID_CUENTA)
             //informar_consulta_cuenta(ID_CUENTA,saldo) a cliente, ademas agregar info a Tabla_Transferencias
+            }
         }
         if(mensaje.split(";")[0].trim().split("|")[0].trim().equals("ID_CUENTA_ORIGEN")){
             if(mensaje.split(";")[0].trim().split("|")[1].trim().equals("ID_CUENTA_ORIGEN")){
                 if(mensaje.split(";")[0].trim().split("|")[2].trim().equals("MONTO")){
+                    System.out.println("Transferir_montos");
                     //es una transferencia
                     //mandar una consulta a los nodos ccon la etiqueta TRANSFERIR_FONDOS como primera linea de mensaje hacia nodo
                     //se recibe resultado de operacion e info para la Tabla_Transferencias
@@ -93,13 +104,14 @@ public class Servidor {
     public void servidorEnviaNodo(String mensaje){
         tcpServer.enviarMensajeNodo(mensaje);
     }
-    
+    ArrayList <String> datosClientes;
+    ArrayList<String> datosCuentas;
     public void leerTablasEnviar(){
         try{
             BufferedReader tclientes = new BufferedReader(new FileReader("C:\\Users\\FLORES VILLAR\\Desktop\\Concurrente\\redesyo\\parcial\\Tabla_Cliente.txt"));
-            ArrayList <String> datosClientes = new ArrayList<>();
+            datosClientes = new ArrayList<>();
             BufferedReader tcuentas = new BufferedReader(new FileReader("C:\\Users\\FLORES VILLAR\\Desktop\\Concurrente\\redesyo\\parcial\\Tabla_Cuenta.txt"));
-            ArrayList<String> datosCuentas = new ArrayList<>();
+            datosCuentas = new ArrayList<>();//array de String
 
             String linea;
             int cont = 0;
@@ -152,18 +164,21 @@ public class Servidor {
                     //enviar a tres nodos id:i,j ; rango:j*bloque,(j+1)*bloque ; info:cuerpode ij
                     String info ="";
                     for(String tex : ij){
-                        info=info+tex+"\n"; 
+                        info=info+tex+";"; 
                     }
                     //limites
-                    int suma=0;
-                    if(i==1){
-                        suma = 100*i;
+                   
+                    int columna = j + 1;
+                    int fila = i + 1;
+                    int inferior = -1;
+                    int superior = -1;
+
+                    // Saltamos la cabecera que está en ij[0]
+                    if (ij.size() > 1) {
+                        inferior = obtenerIDDesdeLinea(ij.get(1)); // primer dato real
+                        superior = obtenerIDDesdeLinea(ij.get(ij.size() - 1)); // último dato
                     }
-                    int columna=j+1;;  
-                    int fila =i+1;
-                    int inferior = j*bloque+1+suma;
-                    int superior = Math.min((j+1)*bloque,datai.size())+1+suma;
-                    String info_enviar = "PARTE:"+fila+"."+columna+"|"+"RANGO_IDS:"+inferior+","+superior+"\n "+info;
+                    String info_enviar = "PARTE:"+fila+"."+columna+"|"+"RANGO_IDS:"+inferior+","+superior+";"+info;
                     //escoger a m nodos de entre nNodos
                     //m=3 nodos
                     for(int r =0;r<3;r++){
@@ -178,6 +193,15 @@ public class Servidor {
             e.printStackTrace();
         }
     }
+    private int obtenerIDDesdeLinea(String linea) {
+    String[] partes = linea.trim().split("\\|");
+    try {
+        return Integer.parseInt(partes[0].trim()); // ID está en la primera columna
+    } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+        return -1; // error al parsear
+    }
+}
+
     double dineroTotal ;
     public void arqueroCuenta(ArrayList<String> dataCuenta){
         double suma=0;
