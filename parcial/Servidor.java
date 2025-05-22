@@ -95,13 +95,16 @@ public class Servidor {
     public void servidorEscuchadorNodo(String mensaje){
         System.out.println("servidor recibe de nodo: "+mensaje);
         pantallaServidor.agregarMensajeNodo(mensaje);
-        if(mensaje.contains("[\\|;]")){ //"SALDO_CONSULTADO;"+ID+";"+saldo_consultado+";"+idObjetoCliente
+        if(mensaje.contains("|") || mensaje.contains(";")){ //"SALDO_CONSULTADO;"+ID+";"+saldo_consultado+";"+idObjetoCliente
             if(mensaje.split(";")[0].trim().equals("SALDO_CONSULTADO")){
-                String msj = "SALDO_CONSULTADO;"+mensaje.split(";")[1].trim()+mensaje.split(";")[2].trim(); //enviar a cliente 
+                //agregar a Tabla_transacciones pero solo una vez, de momento los nodos que tienen la info3,
+                //devuelven 3 veces y se envia 3 veces al cliente que solicita
+                String msj = "SALDO_CONSULTADO;"+mensaje.split(";")[1].trim()+";"+mensaje.split(";")[2].trim(); //enviar a cliente 
                 String idObjetoCliente =  mensaje.split(";")[3].trim();
                 int indx = Integer.parseInt(idObjetoCliente);
-                TCPThread tcpthread = tcpServer.obtenerCliente(indx);
-                tcpthread.enviarMensajeACliente(mensaje);
+                TCPThread tcpthread = tcpServer.obtenerCliente(indx);//no esta enviando 
+                System.out.println("msj : "+msj+"tcpthread: "+tcpthread);
+                tcpthread.enviarMensajeACliente(msj);
             }
         }
         //System.out.println("Texto en pantallaServidor: " + pantallaServidor.mensajesNodo.getText());
@@ -115,13 +118,14 @@ public class Servidor {
     }
     ArrayList <String> datosClientes;
     ArrayList<String> datosCuentas;
+    ArrayList<String> datosTransacciones;
     public void leerTablasEnviar(){
         try{
             BufferedReader tclientes = new BufferedReader(new FileReader("C:\\Users\\FLORES VILLAR\\Desktop\\Concurrente\\redesyo\\parcial\\Tabla_Cliente.txt"));
             datosClientes = new ArrayList<>();
             BufferedReader tcuentas = new BufferedReader(new FileReader("C:\\Users\\FLORES VILLAR\\Desktop\\Concurrente\\redesyo\\parcial\\Tabla_Cuenta.txt"));
             datosCuentas = new ArrayList<>();//array de String
-
+            datosTransacciones = new ArrayList<>();
             String linea;
             int cont = 0;
             int t= 2;//cantidad de tablas;
