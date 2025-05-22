@@ -99,11 +99,28 @@ public class Nodo {
        
         //Si el mensaje es CONSULTAR_SALDO
         if(mensaje.split(";")[0].trim().equals("CONSULTAR_SALDO")){
-            int ID = Integer.parseInt(mensaje.split(";")[1].trim());
+            String ID = mensaje.split(";")[1].trim();
+            String saldo_consultado="";
             //en la segunda linea esta el ID_CUENTA id
             //busca en su data local 
             //devuelve SALDO si tiene la cuenta,nada si no ,agregar mensaje para la tabla transferencias 
-            
+            for(Parte partes:tablaCuentas){
+                int i=0;
+                for(String linea:partes.datos){
+                    if(i==0){
+                        i++;
+                    }
+                    else{
+                        String []columnas =linea.split("\\|");
+                        if(columnas[0].trim().equals(ID)){
+                            saldo_consultado = columnas[2].trim();
+                            String idObjetoCliente = mensaje.split(";")[2].trim();
+                            nodoEnvia("SALDO_CONSULTADO;"+ID+";"+saldo_consultado+";"+idObjetoCliente);
+                            break;
+                        }
+                    }
+                }
+            }
         }
         if(mensaje.split(";")[0].trim().equals("TRANSFERIR_FONDOS")){
             //en la segunda linea estan ID_CUENTA_ORIGEN |   ID_CUENTA_DESTINO |  MONTO \n id_de | id_para | monto \n

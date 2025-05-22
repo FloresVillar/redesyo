@@ -110,4 +110,8 @@ public class TCPServer{
         if(indx<0 || indx>=nNodos) return null;
         return nodos[indx];
     }
+    TCPThread obtenerCliente(int indx){
+        if(indx<0 || indx>=nNodos) return null;
+        return clientes[indx];
+    }
 }

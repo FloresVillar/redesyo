@@ -19,6 +19,7 @@ public class Cliente {
     Scanner sc = new Scanner(System.in);
     Pantalla pantallaCliente;
     boolean primerMensaje =false;
+    int idObjetoCliente;
     Cliente() {
         pantallaCliente = new Pantalla();
     }
@@ -62,6 +63,18 @@ public class Cliente {
     }
     public void clienteEscuchador(String mensaje) {
         System.out.println("cliente recibe: " + mensaje);
+        if(mensaje.contains(";")){
+            if(mensaje.split(";")[0].equals("ESTE ES TU ID")){
+                idObjetoCliente = Integer.parseInt(mensaje.split(";")[1].trim());
+            }//msj = "SALDO_CONSULTADO;"+ID_CUENTA+SALDO;
+            if(mensaje.split(";")[0].equals("SALDO_CONSULTADO")){
+                String id = mensaje.split(";")[1].trim();
+                int idd=Integer.parseInt(id);
+                String saldoConsultado = mensaje.split(";")[2].trim();
+                double saldo =Double.parseDouble(saldoConsultado);
+                System.out.println("ID_CUENTA: "+idd+" SALDO: " +saldo);
+            }
+        }
     }
 
     public void clienteEscuchadorPantalla(String mensaje) {
@@ -97,7 +110,7 @@ public class Cliente {
                 public void actionPerformed(ActionEvent evento) {
                     String mensj = entrada.getText();//siguiendo la logica de los mensjaes "CONSULTAR_SALDO | ID_CUENTA | SALDO"
                     if (!mensj.isEmpty()) {
-                        mensj="ID_CUENTA ;" +mensj;
+                        mensj="ID_CUENTA ;" +mensj+";"+idObjetoCliente;
                         clienteEnvia(mensj);
                         entrada.setText("");
                     }
@@ -107,7 +120,7 @@ public class Cliente {
                 public void actionPerformed(ActionEvent evento) {
                     String mensj = entrada.getText();
                     if (!mensj.isEmpty()){
-                        mensj="ID_CUENTA_ORIGEN | ID_CUENTA_DESTINO | MONTO ;"+ mensj;
+                        mensj="ID_CUENTA_ORIGEN | ID_CUENTA_DESTINO | MONTO ;"+ mensj+";"+idObjetoCliente;
                         clienteEnvia(mensj);
                         entrada.setText("");
                     }

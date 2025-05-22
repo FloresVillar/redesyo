@@ -69,8 +69,8 @@ public class Servidor {
             int ID_CUENTA=0;
             try{
                 ID_CUENTA = Integer.parseInt(mensaje.split(";")[1].trim());
-                
-                String msj = "CONSULTAR_SALDO;"+ID_CUENTA;
+                String idObjetoCliente =mensaje.split(";")[2].trim();
+                String msj = "CONSULTAR_SALDO;"+ID_CUENTA+";"+idObjetoCliente;
                 servidorEnviaNodo(msj);
             }catch(NumberFormatException e){
                 System.out.print("id no valido");
@@ -95,6 +95,15 @@ public class Servidor {
     public void servidorEscuchadorNodo(String mensaje){
         System.out.println("servidor recibe de nodo: "+mensaje);
         pantallaServidor.agregarMensajeNodo(mensaje);
+        if(mensaje.contains("[\\|;]")){ //"SALDO_CONSULTADO;"+ID+";"+saldo_consultado+";"+idObjetoCliente
+            if(mensaje.split(";")[0].trim().equals("SALDO_CONSULTADO")){
+                String msj = "SALDO_CONSULTADO;"+mensaje.split(";")[1].trim()+mensaje.split(";")[2].trim(); //enviar a cliente 
+                String idObjetoCliente =  mensaje.split(";")[3].trim();
+                int indx = Integer.parseInt(idObjetoCliente);
+                TCPThread tcpthread = tcpServer.obtenerCliente(indx);
+                tcpthread.enviarMensajeACliente(mensaje);
+            }
+        }
         //System.out.println("Texto en pantallaServidor: " + pantallaServidor.mensajesNodo.getText());
         //determinar si el mensaje desde el nodo es informacion solicitada acerca de cosulta o transaccion
     }

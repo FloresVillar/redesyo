@@ -33,10 +33,11 @@ public class TCPThread extends Thread{
             out= new PrintWriter(new BufferedWriter(new OutputStreamWriter(cliente.getOutputStream())));
             in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
             escuchador =  server.obtenerEscuchador();
+            enviarMensajeACliente("ESTE ES TU ID;"+id);
             while(corriendo){
                 mensaje = in.readLine();
                 if(mensaje!=null && escuchador!=null){
-                    System.out.println("dentro de while TCPThread IN");
+                    System.out.println("dentro de while TCPThread IN ID hilo: ");
                     System.out.println("escuchador"+escuchador);
                     escuchador.mensajeRecibido(mensaje);
                 }else{
